@@ -14,8 +14,9 @@ Show usage instructions:
 make
 ```
 
-Build:
+Remove previously built output, and rebuild:
 ```
+make reset
 make get
 make all
 ```

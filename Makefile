@@ -30,7 +30,7 @@ OUT_PATH := out
 #===========================================================
 .PHONY: usage
 usage: 
-	@echo "usage: make <target> [FORCE=TRUE] [COMPLETE=TRUE]"
+	@echo "usage: make <target> [FORCE=TRUE]"
 	@echo ""
 	@echo "<target> is one off:"
 	@echo "get"
@@ -41,6 +41,16 @@ usage:
 #===========================================================
 # Target
 #===========================================================
+ifneq ($(wildcard ${OUT_PATH}/Image ${OUT_PATH}/rootfs.cpio.gz),)
+
+.PHONY: get
+get:
+
+.PHONY: all
+all:
+
+else
+
 .PHONY: get
 get: | ${TMP_PATH}
 	curl "https://buildroot.org/downloads/buildroot-2024.02.4.tar.gz" --output ${TMP_PATH}/buildroot-2024.02.4.tar.gz
@@ -56,18 +66,11 @@ ${TMP_PATH}:
 ${OUT_PATH}:
 	mkdir ${OUT_PATH}
 
-ifdef COMPLETE
-# Cache with dependencies.
 ${OUT_PATH}/Image: ${TMP_PATH}/assemble/images/Image | ${OUT_PATH}
 	cp -r $< $@
 
 ${OUT_PATH}/rootfs.cpio.gz: ${TMP_PATH}/assemble/images/rootfs.cpio.gz | ${OUT_PATH}
 	cp -r $< $@
-else
-# Cache without dependencies.
-${OUT_PATH}/Image ${OUT_PATH}/rootfs.cpio.gz:
-	make all COMPLETE=TRUE
-endif
 
 ${TMP_PATH}/assemble: | ${TMP_PATH}
 	mkdir ${TMP_PATH}/assemble
@@ -81,6 +84,8 @@ ${TMP_PATH}/assemble/linux.defconfig: ${SRC_PATH}/linux.defconfig | ${TMP_PATH}/
 ${TMP_PATH}/assemble/images/Image ${TMP_PATH}/assemble/images/rootfs.cpio.gz &: ${TMP_PATH}/assemble/.config ${TMP_PATH}/assemble/linux.defconfig ${TMP_PATH}/buildroot-2024.02.4 | ${TMP_PATH}
 	make -C ${TMP_PATH}/buildroot-2024.02.4 O="../assemble" olddefconfig
 	make -C ${TMP_PATH}/buildroot-2024.02.4 O="../assemble"
+
+endif
 
 .PHONY: clean
 clean:
