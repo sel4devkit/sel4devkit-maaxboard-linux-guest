@@ -134,7 +134,8 @@ Save the `.config` at the default location, which shall be within
 Note that for Build Root, all paths are relative to the location of its
 outermost Makefile. Since the Build Root Makefile resides at
 `./buildroot-2024.02.4/Makefile` our relative configuration is at
-`../config/linux.defconfig`.
+`../config/linux.defconfig`. Should the Build Root configuration be moved to
+anouther path, the `config` path would need updated accordingly.
 
 Retain compact Build Root configuration:
 ```
@@ -156,6 +157,7 @@ tar --extract --file buildroot-2024.02.4.tar
 mkdir assemble
 cp ./config/buildroot.defconfig ./assemble/.config
 cp ./config/linux.defconfig ./assemble/linux.defconfig
+sed --in-place --expression "s/..\/config/..\/assemble/g" ./assemble/.config
 make -C ./buildroot-2024.02.4 O="../assemble" olddefconfig
 make -C ./buildroot-2024.02.4 O="../assemble"
 ```

@@ -77,6 +77,7 @@ ${TMP_PATH}/assemble: | ${TMP_PATH}
 
 ${TMP_PATH}/assemble/.config: ${SRC_PATH}/buildroot.defconfig | ${TMP_PATH}/assemble
 	cp ${SRC_PATH}/buildroot.defconfig ${TMP_PATH}/assemble/.config
+	sed --in-place --expression "s/..\/config/..\/assemble/g" ${TMP_PATH}/assemble/.config
 
 ${TMP_PATH}/assemble/linux.defconfig: ${SRC_PATH}/linux.defconfig | ${TMP_PATH}/assemble
 	cp ${SRC_PATH}/linux.defconfig ${TMP_PATH}/assemble/linux.defconfig
