@@ -52,7 +52,9 @@ all:
 else
 
 .PHONY: get
-get: | ${TMP_PATH}
+get: | ${TMP_PATH}/buildroot-2024.02.4
+
+${TMP_PATH}/buildroot-2024.02.4: | ${TMP_PATH}
 	curl "https://buildroot.org/downloads/buildroot-2024.02.4.tar.gz" --output ${TMP_PATH}/buildroot-2024.02.4.tar.gz
 	gunzip ${TMP_PATH}/buildroot-2024.02.4.tar.gz
 	tar --directory ${TMP_PATH} --extract --file ${TMP_PATH}/buildroot-2024.02.4.tar
@@ -82,7 +84,7 @@ ${TMP_PATH}/assemble/.config: ${SRC_PATH}/buildroot.defconfig | ${TMP_PATH}/asse
 ${TMP_PATH}/assemble/linux.defconfig: ${SRC_PATH}/linux.defconfig | ${TMP_PATH}/assemble
 	cp ${SRC_PATH}/linux.defconfig ${TMP_PATH}/assemble/linux.defconfig
 
-${TMP_PATH}/assemble/images/Image ${TMP_PATH}/assemble/images/rootfs.cpio.gz &: ${TMP_PATH}/assemble/.config ${TMP_PATH}/assemble/linux.defconfig ${TMP_PATH}/buildroot-2024.02.4 | ${TMP_PATH}
+${TMP_PATH}/assemble/images/Image ${TMP_PATH}/assemble/images/rootfs.cpio.gz &: ${TMP_PATH}/assemble/.config ${TMP_PATH}/assemble/linux.defconfig | ${TMP_PATH}/buildroot-2024.02.4 ${TMP_PATH}
 	make -C ${TMP_PATH}/buildroot-2024.02.4 O="../assemble" olddefconfig
 	make -C ${TMP_PATH}/buildroot-2024.02.4 O="../assemble"
 
